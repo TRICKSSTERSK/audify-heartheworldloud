@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hear the World - AI Voice Amplifier</title>
+    <meta name="description" content="AI-powered real-time voice booster for the hearing impaired, bringing clarity to every conversation." />
+    <meta name="author" content="Lovable" />
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <meta property="og:title" content="Hear the World - AI Voice Amplifier" />
+    <meta property="og:description" content="AI-powered real-time voice booster for the hearing impaired, bringing clarity to every conversation." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      /* Custom animation for sound waves */
+      @keyframes pulse-wave {
+        0% {
+          transform: scale(0.6);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 0.3;
+        }
+        100% {
+          transform: scale(0.6);
+          opacity: 0.8;
+        }
+      }
+      
+      .sound-wave-circle {
+        animation: pulse-wave 2s infinite ease-in-out;
+        transform-origin: center;
+      }
+      
+      .delay-1 { animation-delay: 0.5s; }
+      .delay-2 { animation-delay: 1s; }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
