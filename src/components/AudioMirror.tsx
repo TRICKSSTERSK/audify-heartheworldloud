@@ -20,6 +20,7 @@ const AudioMirror = () => {
   const compressorNodeRef = useRef<DynamicsCompressorNode | null>(null);
   const highPassFilterRef = useRef<BiquadFilterNode | null>(null);
   const peakingFilterRef = useRef<BiquadFilterNode | null>(null);
+  const bassFilterRef = useRef<BiquadFilterNode | null>(null);
 
   const { toast } = useToast();
 
@@ -63,13 +64,19 @@ const AudioMirror = () => {
         peakingFilterRef.current.gain.value = 0;
         peakingFilterRef.current.Q.value = 1;
 
+        bassFilterRef.current = audioContextRef.current.createBiquadFilter();
+        bassFilterRef.current.type = 'lowshelf';
+        bassFilterRef.current.frequency.value = 200;
+        bassFilterRef.current.gain.value = 0;
+
         gainNodeRef.current = audioContextRef.current.createGain();
-        gainNodeRef.current.gain.value = 1;
+        gainNodeRef.current.gain.value = 3;
 
         // Connect the audio graph
         sourceNodeRef.current.connect(compressorNodeRef.current);
         compressorNodeRef.current.connect(highPassFilterRef.current);
-        highPassFilterRef.current.connect(peakingFilterRef.current);
+        highPassFilterRef.current.connect(bassFilterRef.current);
+        bassFilterRef.current.connect(peakingFilterRef.current);
         peakingFilterRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
 
@@ -113,6 +120,7 @@ const AudioMirror = () => {
     compressorNodeRef.current = null;
     highPassFilterRef.current = null;
     peakingFilterRef.current = null;
+    bassFilterRef.current = null;
 
     setIsStreaming(false);
     setAudioStatus('Microphone inactive. Click "Start Listening" to begin.');
@@ -148,6 +156,11 @@ const AudioMirror = () => {
         onHowItWorks={handleHowItWorks}
         isStreaming={isStreaming}
         audioStatus={audioStatus}
+        gainNodeRef={gainNodeRef}
+        compressorNodeRef={compressorNodeRef}
+        highPassFilterRef={highPassFilterRef}
+        peakingFilterRef={peakingFilterRef}
+        bassFilterRef={bassFilterRef}
       />
       <HowItWorksSection />
       <FeaturesSection />

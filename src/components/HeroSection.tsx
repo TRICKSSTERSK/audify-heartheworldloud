@@ -8,9 +8,24 @@ interface HeroSectionProps {
   onHowItWorks: () => void;
   isStreaming: boolean;
   audioStatus: string;
+  gainNodeRef: React.RefObject<GainNode | null>;
+  compressorNodeRef: React.RefObject<DynamicsCompressorNode | null>;
+  highPassFilterRef: React.RefObject<BiquadFilterNode | null>;
+  peakingFilterRef: React.RefObject<BiquadFilterNode | null>;
+  bassFilterRef: React.RefObject<BiquadFilterNode | null>;
 }
 
-const HeroSection = ({ onStartListening, onHowItWorks, isStreaming, audioStatus }: HeroSectionProps) => {
+const HeroSection = ({ 
+  onStartListening, 
+  onHowItWorks, 
+  isStreaming, 
+  audioStatus,
+  gainNodeRef,
+  compressorNodeRef,
+  highPassFilterRef,
+  peakingFilterRef,
+  bassFilterRef
+}: HeroSectionProps) => {
   return (
     <section className="relative h-screen bg-gradient-to-br from-blue-100 to-white flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Background pattern */}
@@ -80,7 +95,14 @@ const HeroSection = ({ onStartListening, onHowItWorks, isStreaming, audioStatus 
             </button>
           </div>
 
-          <AudioControls isStreaming={isStreaming} />
+          <AudioControls 
+            isStreaming={isStreaming}
+            gainNodeRef={gainNodeRef}
+            compressorNodeRef={compressorNodeRef}
+            highPassFilterRef={highPassFilterRef}
+            peakingFilterRef={peakingFilterRef}
+            bassFilterRef={bassFilterRef}
+          />
           
           <p className="text-sm text-gray-500 mt-4 text-center lg:text-left">
             {audioStatus}

@@ -1,27 +1,34 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { Volume2 } from 'lucide-react';
+import { Volume2, Settings } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 interface AudioControlsProps {
   isStreaming: boolean;
+  gainNodeRef: React.RefObject<GainNode | null>;
+  compressorNodeRef: React.RefObject<DynamicsCompressorNode | null>;
+  highPassFilterRef: React.RefObject<BiquadFilterNode | null>;
+  peakingFilterRef: React.RefObject<BiquadFilterNode | null>;
+  bassFilterRef: React.RefObject<BiquadFilterNode | null>;
 }
 
-const AudioControls = ({ isStreaming }: AudioControlsProps) => {
-  const [volume, setVolume] = useState([1]);
+const AudioControls = ({ 
+  isStreaming, 
+  gainNodeRef, 
+  compressorNodeRef, 
+  highPassFilterRef, 
+  peakingFilterRef,
+  bassFilterRef 
+}: AudioControlsProps) => {
+  const [volume, setVolume] = useState([3]);
+  const [bassGain, setBassGain] = useState([0]);
   const [compressorThreshold, setCompressorThreshold] = useState([-24]);
   const [highPassFreq, setHighPassFreq] = useState([80]);
   const [peakingFreq, setPeakingFreq] = useState([1000]);
   const [peakingGain, setPeakingGain] = useState([0]);
-
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
-  const compressorNodeRef = useRef<DynamicsCompressorNode | null>(null);
-  const highPassFilterRef = useRef<BiquadFilterNode | null>(null);
-  const peakingFilterRef = useRef<BiquadFilterNode | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { toast } = useToast();
 
@@ -72,6 +79,9 @@ const AudioControls = ({ isStreaming }: AudioControlsProps) => {
       if (gainNodeRef.current) {
         gainNodeRef.current.gain.value = volume[0];
       }
+      if (bassFilterRef.current) {
+        bassFilterRef.current.gain.value = bassGain[0];
+      }
       if (compressorNodeRef.current) {
         compressorNodeRef.current.threshold.value = compressorThreshold[0];
       }
@@ -83,107 +93,144 @@ const AudioControls = ({ isStreaming }: AudioControlsProps) => {
         peakingFilterRef.current.gain.value = peakingGain[0];
       }
     }
-  }, [isStreaming, volume, compressorThreshold, highPassFreq, peakingFreq, peakingGain]);
+  }, [isStreaming, volume, bassGain, compressorThreshold, highPassFreq, peakingFreq, peakingGain]);
 
   if (!isStreaming) {
     return null;
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md max-w-lg mx-auto lg:mx-0">
-      <div className="space-y-6">
-        {/* Volume Control */}
-        <div className="space-y-2">
+    <div className="bg-card p-4 sm:p-6 rounded-xl shadow-lg max-w-sm mx-auto lg:mx-0 border">
+      <div className="space-y-4 sm:space-y-6">
+        {/* Volume Control - Most Important */}
+        <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-700">Volume</label>
-            <span className="text-sm text-gray-600">{volume[0].toFixed(1)}x</span>
+            <label className="text-base sm:text-lg font-semibold text-foreground">Volume</label>
+            <span className={`text-sm font-medium ${
+              volume[0] > 7 ? 'text-destructive' : 'text-muted-foreground'
+            }`}>
+              {volume[0].toFixed(1)}x {volume[0] > 7 && '⚠️'}
+            </span>
           </div>
           <Slider
             value={volume}
             onValueChange={setVolume}
-            max={4}
+            max={10}
             min={0}
             step={0.1}
-            className="w-full"
+            className="w-full h-6 sm:h-8"
           />
+          {volume[0] > 7 && (
+            <p className="text-xs text-destructive">High volume - protect your hearing</p>
+          )}
         </div>
 
-        {/* Compressor Threshold */}
-        <div className="space-y-2">
+        {/* Bass Control - Second Most Important */}
+        <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-700">Compressor</label>
-            <span className="text-sm text-gray-600">{compressorThreshold[0]} dB</span>
+            <label className="text-base sm:text-lg font-semibold text-foreground">Bass</label>
+            <span className="text-sm font-medium text-muted-foreground">
+              {bassGain[0] > 0 ? '+' : ''}{bassGain[0]} dB
+            </span>
           </div>
           <Slider
-            value={compressorThreshold}
-            onValueChange={setCompressorThreshold}
-            max={0}
-            min={-100}
+            value={bassGain}
+            onValueChange={setBassGain}
+            max={15}
+            min={-15}
             step={1}
-            className="w-full"
+            className="w-full h-6 sm:h-8"
           />
         </div>
 
-        {/* High-Pass Filter */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-700">High-Pass Filter</label>
-            <span className="text-sm text-gray-600">{highPassFreq[0]} Hz</span>
-          </div>
-          <Slider
-            value={highPassFreq}
-            onValueChange={setHighPassFreq}
-            max={500}
-            min={20}
-            step={10}
-            className="w-full"
-          />
-        </div>
+        {/* Advanced Controls Toggle */}
+        <Button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          variant="outline"
+          className="w-full"
+        >
+          <Settings className="mr-2 h-4 w-4" />
+          {showAdvanced ? 'Hide' : 'Show'} Advanced Controls
+        </Button>
 
-        {/* EQ Frequency */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-700">EQ Frequency</label>
-            <span className="text-sm text-gray-600">{peakingFreq[0]} Hz</span>
-          </div>
-          <Slider
-            value={peakingFreq}
-            onValueChange={setPeakingFreq}
-            max={8000}
-            min={200}
-            step={100}
-            className="w-full"
-          />
-        </div>
+        {/* Advanced Controls */}
+        {showAdvanced && (
+          <div className="space-y-4 border-t pt-4">
+            {/* Compressor Threshold */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-foreground">Compressor</label>
+                <span className="text-xs text-muted-foreground">{compressorThreshold[0]} dB</span>
+              </div>
+              <Slider
+                value={compressorThreshold}
+                onValueChange={setCompressorThreshold}
+                max={0}
+                min={-100}
+                step={1}
+                className="w-full h-5"
+              />
+            </div>
 
-        {/* EQ Gain */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-700">EQ Gain</label>
-            <span className="text-sm text-gray-600">{peakingGain[0]} dB</span>
+            {/* High-Pass Filter */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-foreground">High-Pass</label>
+                <span className="text-xs text-muted-foreground">{highPassFreq[0]} Hz</span>
+              </div>
+              <Slider
+                value={highPassFreq}
+                onValueChange={setHighPassFreq}
+                max={500}
+                min={20}
+                step={10}
+                className="w-full h-5"
+              />
+            </div>
+
+            {/* EQ Frequency */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-foreground">EQ Freq</label>
+                <span className="text-xs text-muted-foreground">{peakingFreq[0]} Hz</span>
+              </div>
+              <Slider
+                value={peakingFreq}
+                onValueChange={setPeakingFreq}
+                max={8000}
+                min={200}
+                step={100}
+                className="w-full h-5"
+              />
+            </div>
+
+            {/* EQ Gain */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-foreground">EQ Gain</label>
+                <span className="text-xs text-muted-foreground">{peakingGain[0]} dB</span>
+              </div>
+              <Slider
+                value={peakingGain}
+                onValueChange={setPeakingGain}
+                max={20}
+                min={-20}
+                step={1}
+                className="w-full h-5"
+              />
+            </div>
           </div>
-          <Slider
-            value={peakingGain}
-            onValueChange={setPeakingGain}
-            max={20}
-            min={-20}
-            step={1}
-            className="w-full"
-          />
-        </div>
+        )}
 
         {/* Test Sound Button */}
         <Button
           onClick={playTestSound}
-          className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+          className="w-full h-12 text-base font-medium"
+          variant="secondary"
         >
-          <Volume2 className="mr-2 h-4 w-4" />
+          <Volume2 className="mr-2 h-5 w-5" />
           Test Sound
         </Button>
-
-        <div className="text-xs text-gray-500 text-center border-t pt-4">
-          *Advanced real-time pitch shifting requires specialized libraries for optimal performance
-        </div>
       </div>
     </div>
   );
