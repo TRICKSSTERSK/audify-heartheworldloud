@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Mic } from 'lucide-react';
 import AudioControls from './AudioControls';
@@ -40,11 +41,11 @@ const HeroSection = ({
         <div className="w-full lg:w-1/2 flex flex-col justify-center lg:justify-start mb-12 lg:mb-0">
           <div className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-primary/20 dark:bg-primary/10 rounded-full flex items-center justify-center shadow-xl mx-auto lg:mx-0">
             {/* AUDIFY Logo */}
-            <div className="w-2/3 h-2/3 bg-gradient-to-br from-primary/30 to-primary/40 dark:from-primary/20 dark:to-primary/30 rounded-full shadow-lg flex items-center justify-center p-4">
+            <div className="w-2/3 h-2/3 bg-gradient-to-br from-primary/30 to-primary/40 dark:from-primary/20 dark:to-primary/30 rounded-full shadow-lg flex items-center justify-center p-4 overflow-hidden">
               <img 
                 src="/lovable-uploads/7b9d1ba4-f364-4b2d-a071-4f05301f8402.png" 
                 alt="AUDIFY hearing solutions logo" 
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-full"
               />
             </div>
 
