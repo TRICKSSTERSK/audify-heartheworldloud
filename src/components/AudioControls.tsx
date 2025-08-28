@@ -89,7 +89,7 @@ const AudioControls = ({
   if (!isStreaming) {
     return null;
   }
-  return <div className="bg-card p-4 sm:p-6 rounded-xl shadow-lg max-w-sm mx-auto lg:mx-0 border">
+  return <div className="bg-card p-4 sm:p-6 rounded-xl shadow-lg max-w-sm mx-auto lg:mx-0 border mb-8 sm:mb-12">
       <div className="space-y-4 sm:space-y-6">
         {/* Volume Control - Most Important */}
         <div className="space-y-3">

@@ -4,7 +4,7 @@ import { Mic, Brain, Headphones, ArrowRight, ArrowDown } from 'lucide-react';
 
 const HowItWorksSection = () => {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50" id="how-it-works">
+    <section className="py-32 sm:py-40 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 mt-20 sm:mt-32 lg:mt-0" id="how-it-works">
       <div className="container mx-auto">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-16">How It Works</h2>
         <div className="flex flex-col md:flex-row justify-center items-center gap-8 lg:gap-12">

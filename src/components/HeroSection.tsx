@@ -23,7 +23,7 @@ const HeroSection = ({
   peakingFilterRef,
   bassFilterRef
 }: HeroSectionProps) => {
-  return <section className="relative h-screen bg-gradient-to-br from-blue-100 to-white flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+  return <section className="relative min-h-screen bg-gradient-to-br from-blue-100 to-white flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 pb-32 sm:pb-40 lg:pb-20 overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10" style={{
       backgroundImage: `url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M20 0H0v20L20 0zm0 20H0v20L20 20zm0 20H0v20L20 40zm0 20H0v20L20 60zm0 20H0v20L20 80zm20-80h-20v20L40 0zm0 20h-20v20L40 20zm0 20h-20v20L40 40zm0 20h-20v20L40 60zm0 20h-20v20L40 80zm20-80h-20v20L60 0zm0 20h-20v20L60 20zm0 20h-20v20L60 40zm0 20h-20v20L60 60zm0 20h-20v20L60 80zm20-80h-20v20L80 0zm0 20h-20v20L80 20zm0 20h-20v20L80 40zm0 20h-20v20L80 60zm0 20h-20v20L80 80zM100 0h-20v20L100 0zM100 20h-20v20L100 20zM100 40h-20v20L100 40zM100 60h-20v20L100 60zM100 80h-20v20L100 80z" fill="%23a0aec0" fill-opacity="0.2" /%3E%3C/svg%3E')`,
